@@ -120,16 +120,16 @@ START:
         
         cmp basket_x,0
             jle lret_
-        sub basket_x,50
+        sub basket_x,5
         lret_:
         ret
     move_left endp
 
     move_right proc near
-        cmp basket_x,300
+        cmp basket_x,305
             jge rret_
 
-        add basket_x,50
+        add basket_x,5
         rret_:
         ret
     move_right endp
