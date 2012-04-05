@@ -52,8 +52,23 @@ DrawPixel macro color
         pop cx
         pop ax
 endm
+;Params : microseconds as mh:ml
+delay macro mh,ml
+    push ax
+    push cx
+    push dx
 
+    mov al,0
+    mov ah,86h
+    mov dx,ml
+    mov cx,mh
+    int 15h
 
+    pop dx
+    pop cx
+    pop ax
+
+endm
 START:
 
     mov ax,@data
