@@ -16,6 +16,14 @@ buffer dw ?
 basket_x dw 150
 basket_y dw 190
 
+;Egg details
+egg_color db 1111b
+egg_file db "d:\egg.txt",0
+
+egg_x dw 100
+egg_y dw 100
+
+
 cur_x dw 50
 cur_y dw 300
 
@@ -56,15 +64,27 @@ START:
     mov al,13h
     mov ah,0
     int 10h
-    
-  Polling:  
-    call drawBasket    
    
-    ;Get keystroke from keyboard
-    mov ah,00h
+  Polling:  
+    
+    mov egg_color ,0000b
+    call drawEgg
+    inc egg_y
+    mov egg_color,1111b
+    call drawBasket    
+    call drawEgg
+ 
     mov al,0h
+    mov ah,01h
     int 16h
 
+    jz polling
+    
+    ;Get keystroke from keyboard
+    mov ah,0h
+    mov al,0h
+    int 16h
+    
     mov key,al
     cmp key,'a'
         jne right
@@ -127,6 +147,69 @@ START:
         ret
     move_right endp
     
+    drawEgg proc near
+        
+        mov dx,egg_x
+        mov pixel_col,dx
+        
+        mov dx, egg_y
+        mov pixel_row,dx
+        
+        inc pixel_col
+        ;Open the file
+        mov al,0        
+        mov dx,offset egg_file
+        mov ah,3dh
+        int 21h
+        
+        jc eggret_
+        mov file_handle,ax
+        
+        
+
+        eggread:
+            mov bx,file_handle    
+            mov dx,offset buffer
+            mov al,0
+            mov cx,1
+            mov ah,3Fh
+            int 21h
+
+            mov dx,buffer 
+            cmp dx,'1'
+                jne eggnewline
+            
+            
+            
+            DrawPixel egg_color
+
+            jmp eggcont
+            eggnewline:
+                cmp dx,10
+                    jne eggcont
+                
+                mov dx,egg_x
+                mov pixel_col,dx
+                inc pixel_row
+
+            eggcont:
+            inc pixel_col
+            cmp ax,0
+                jne eggread
+        
+
+        eggret_:
+        ;Close the file
+        mov al,0
+        mov ah,3Eh
+        int 21h
+
+        ret
+
+
+
+
+    drawEgg endp
 
     drawBasket proc near
         
