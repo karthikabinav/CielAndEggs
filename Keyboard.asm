@@ -1,13 +1,14 @@
 .model small
 .stack 100h
-
 .data
 
-key db 'b'
+key db 'b' ;Holds the value of key pressed
+
 pixel_row dw 1
 pixel_col dw 1
 
-basket_color db 1111b
+;Basket details
+basket_color db 1010b
 basket_file db "d:\basket.txt",0
 file_handle dw ?
 buffer dw ?
@@ -21,9 +22,9 @@ cur_y dw 300
 .code
 
 mov_cursor macro row,col 
-    mov dh, row ; row number
-    mov dl, col ; column numnber
-    mov bh, 0 ; page number
+    mov dh, row
+    mov dl, col
+    mov bh, 0
     mov ah, 2
     int 10h
     
@@ -38,7 +39,7 @@ DrawPixel macro color
         mov dx,pixel_row
         mov cx,pixel_col
         mov ah,0ch
-        int 10h     ; Set the Pixel
+        int 10h
         pop dx
         pop cx
         pop ax
@@ -51,20 +52,14 @@ START:
     mov ds,ax
     mov es,ax
 
-    ; Set Graphics mode
+    ;Set Graphics mode
     mov al,13h
     mov ah,0
     int 10h
     
   Polling:  
     call drawBasket    
-    ;check:
-        ;mov ah,01h
-        ;mov al,00h
-        ;int 16h
-        
-    ;jnz check
-
+   
     ;Get keystroke from keyboard
     mov ah,00h
     mov al,0h
@@ -78,8 +73,7 @@ START:
         mov basket_color , 0000b
         call drawBasket
         call move_left
-        ;call printChar
-        mov basket_color ,1111b
+        mov basket_color ,1010b
         
         
         jmp Polling
@@ -90,8 +84,7 @@ START:
             mov basket_color , 0000b
             call drawBasket
             call move_right
-            ;call printChar
-            mov basket_color ,1111b
+            mov basket_color ,1010b
                         
             jmp Polling
     exit:
@@ -101,7 +94,7 @@ START:
             jmp Polling
 
     RETURN_CONTROL:
-    mov ax,4c00h                            ; Return control back to the OS
+    mov ax,4c00h
     int 21h
 
 
@@ -126,13 +119,14 @@ START:
     move_left endp
 
     move_right proc near
-        cmp basket_x,305
+        cmp basket_x,300
             jge rret_
 
         add basket_x,5
         rret_:
         ret
     move_right endp
+    
 
     drawBasket proc near
         
@@ -142,13 +136,14 @@ START:
         mov dx, basket_y
         mov pixel_row,dx
 
+        ;Open the file
         mov al,0        
         mov dx,offset basket_file
         mov ah,3dh
         int 21h
         
         jc ret_
-        mov file_handle,ax ; file handle
+        mov file_handle,ax
         
         
 
@@ -184,6 +179,7 @@ START:
         
 
         ret_:
+        ;Close the file
         mov al,0
         mov ah,3Eh
         int 21h
