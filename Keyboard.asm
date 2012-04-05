@@ -7,12 +7,13 @@ key db 'b'
 pixel_row dw 1
 pixel_col dw 1
 
+basket_color db 1111b
 basket_file db "d:\basket.txt",0
 file_handle dw ?
 buffer dw ?
 
-basket_x dw 0
-basket_y dw 0
+basket_x dw 150
+basket_y dw 190
 
 cur_x dw 50
 cur_y dw 300
@@ -55,15 +56,14 @@ START:
     mov ah,0
     int 10h
     
+  Polling:  
     call drawBasket    
-    check:
-        mov ah,01h
-        mov al,00h
-        int 16h
+    ;check:
+        ;mov ah,01h
+        ;mov al,00h
+        ;int 16h
         
-         
-    
-    jnz check
+    ;jnz check
 
     ;Get keystroke from keyboard
     mov ah,00h
@@ -71,7 +71,34 @@ START:
     int 16h
 
     mov key,al
-    call printChar
+    cmp key,'a'
+        jne right
+
+
+        mov basket_color , 0000b
+        call drawBasket
+        call move_left
+        ;call printChar
+        mov basket_color ,1111b
+        
+        
+        jmp Polling
+    right:
+        cmp key,'d'
+            jne exit
+            
+            mov basket_color , 0000b
+            call drawBasket
+            call move_right
+            ;call printChar
+            mov basket_color ,1111b
+                        
+            jmp Polling
+    exit:
+        cmp key,'x'
+            je RETURN_CONTROL
+    
+            jmp Polling
 
     RETURN_CONTROL:
     mov ax,4c00h                            ; Return control back to the OS
@@ -88,8 +115,33 @@ START:
         ret
 
     printChar endp
-    
+
+    move_left proc near
+        
+        cmp basket_x,0
+            jle lret_
+        sub basket_x,50
+        lret_:
+        ret
+    move_left endp
+
+    move_right proc near
+        cmp basket_x,300
+            jge rret_
+
+        add basket_x,50
+        rret_:
+        ret
+    move_right endp
+
     drawBasket proc near
+        
+        mov dx,basket_x
+        mov pixel_col,dx
+        
+        mov dx, basket_y
+        mov pixel_row,dx
+
         mov al,0        
         mov dx,offset basket_file
         mov ah,3dh
@@ -97,6 +149,7 @@ START:
         
         jc ret_
         mov file_handle,ax ; file handle
+        
         
 
         read:
@@ -113,7 +166,7 @@ START:
             
             
             
-            DrawPixel 1111b
+            DrawPixel basket_color
 
             jmp cont
             newline:
