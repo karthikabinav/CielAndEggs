@@ -184,6 +184,10 @@ START:
         
 
         ret_:
+        mov al,0
+        mov ah,3Eh
+        int 21h
+
         ret
     drawBasket endp
 
