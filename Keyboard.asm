@@ -16,33 +16,19 @@ buffer dw ?
 basket_x dw 150
 basket_y dw 190
 
-broken_eggs dw,0
-score dw ,0
+broken_eggs dw 0
+score dw 0
 
 ;Egg details
 egg_color db 1111b
 egg_file db "d:\egg.txt",0
 
-cycle db 0
-egg_x dw 100
-egg_y dw 100
+cycle db 0,0,0,0,0
+egg_x dw 50,100,150,200,250
+egg_y dw 100,100,100,100,100
 
-
-cur_x dw 50
-cur_y dw 300
 
 .code
-
-mov_cursor macro row,col 
-    mov dh, row
-    mov dl, col
-    mov bh, 0
-    mov ah, 2
-    int 10h
-    
-    
-endm
-
 DrawPixel macro color
         push ax
         push cx
@@ -56,6 +42,7 @@ DrawPixel macro color
         pop cx
         pop ax
 endm
+
 ;Params : microseconds as mh:ml
 delay macro mh,ml
     push ax
@@ -86,12 +73,17 @@ START:
    
   Polling:  
     call detect_collision
+    call detect_broken_egg
     cmp dx,1
         jne no_collide
+        inc score
         mov egg_color ,0000b
         call drawEgg
         call drawBasket    
         
+        call generateRandomNumber
+        mov egg_x,dx
+
         mov egg_y,100
         jmp Polling
     no_collide:    
@@ -148,6 +140,10 @@ START:
     RETURN_CONTROL:
     mov ax,4c00h
     int 21h
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   ; Split here into a new file if possible
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     movEgg proc near
         egg_draw: 
@@ -171,7 +167,8 @@ START:
         
         mov_cursor 10,10
 
-        mov dx,key
+        mov dl,key
+        mov dh,0
         mov ah,2 
         int 21h 
         ret
@@ -255,9 +252,6 @@ START:
 
         ret
 
-
-
-
     drawEgg endp
 
     drawBasket proc near
@@ -318,15 +312,26 @@ START:
 
         ret
     drawBasket endp
-    
+    detect_broken_egg proc near
+        cmp egg_y,190
+            jne beret_
+            inc broken_eggs
+            mov dx,1
+
+        beret_:
+            ret
+
+
+    detect_broken_egg endp
     detect_collision proc near
         
         mov dx,egg_y
-        add dx,1
+        add dx,8
 
         mov al,0
         mov ah,0Dh
         mov cx,egg_x
+        add cx,5
         int 10h
         
         cmp al,1010b
@@ -336,4 +341,27 @@ START:
         collisionret_:
             ret
     detect_collision endp
+    
+    ;dx has random number from 1 to 300
+    generateRandomNumber proc near
+       
+    
+        mov al,0
+        mov ah,2Ch
+        int 21h
+
+        mov dh,0
+       
+        add dx,1
+        mov ax,dx
+        mov dx,0
+
+        mov cx,300
+        div cx
+        
+        add dx,1
+        
+        ret
+    generateRandomNumber endp
+
 end START
