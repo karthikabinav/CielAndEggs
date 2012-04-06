@@ -16,6 +16,9 @@ buffer dw ?
 basket_x dw 150
 basket_y dw 190
 
+broken_eggs dw,0
+score dw ,0
+
 ;Egg details
 egg_color db 1111b
 egg_file db "d:\egg.txt",0
@@ -81,7 +84,16 @@ START:
     int 10h
    
   Polling:  
-    
+    call detect_collision
+    cmp dx,1
+        jne no_collide
+        mov egg_color ,0000b
+        call drawEgg
+        call drawBasket    
+ 
+        mov egg_y,100
+        jmp Polling
+    no_collide:    
     mov egg_color ,0000b
     call drawEgg
     inc egg_y
@@ -284,5 +296,22 @@ START:
 
         ret
     drawBasket endp
+    
+    detect_collision proc near
+        
+        mov dx,egg_y
+        add dx,1
 
+        mov al,0
+        mov ah,0Dh
+        mov cx,egg_x
+        int 10h
+        
+        cmp al,1010b
+            jne collisionret_
+            mov dx,1
+        
+        collisionret_:
+            ret
+    detect_collision endp
 end START
