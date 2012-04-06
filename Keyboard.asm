@@ -23,6 +23,7 @@ score dw ,0
 egg_color db 1111b
 egg_file db "d:\egg.txt",0
 
+cycle db 0
 egg_x dw 100
 egg_y dw 100
 
@@ -90,17 +91,21 @@ START:
         mov egg_color ,0000b
         call drawEgg
         call drawBasket    
- 
+        
         mov egg_y,100
         jmp Polling
     no_collide:    
-    mov egg_color ,0000b
-    call drawEgg
-    inc egg_y
-    mov egg_color,1111b
     call drawBasket    
-    call drawEgg
- 
+    
+    cmp cycle,0
+        jne noMoveEgg
+    call movEgg
+    noMoveEgg:
+    inc cycle
+    cmp cycle,10
+        jne mod3
+        mov cycle,0
+    mod3:
     mov al,0h
     mov ah,01h
     int 16h
@@ -144,7 +149,24 @@ START:
     mov ax,4c00h
     int 21h
 
+    movEgg proc near
+        egg_draw: 
+        inc egg_y
+        mov egg_color,1111b
+            call drawEgg
+    
+        dec egg_y
+        mov egg_color ,0000b
+        call drawEgg
+        inc egg_y
+        mov egg_color,1111b
+        call drawEgg
 
+        ret
+    end_egg_draw:
+
+
+    movEgg endp
     printChar proc near
         
         mov_cursor 10,10
