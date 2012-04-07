@@ -24,9 +24,12 @@ egg_color db 1111b
 egg_file db "d:\egg.txt",0
 
 cycle db 0,0,0,0,0
-egg_x dw 50,100,150,200,250
+egg_x dw 50,100,150,200,250 ; Atmost 5 eggs can fall at a time
 egg_y dw 100,100,100,100,100
 
+;Variables to store values of where to print
+p_x db 0
+p_y db 0
 
 .code
 DrawPixel macro color
@@ -41,6 +44,16 @@ DrawPixel macro color
         pop dx
         pop cx
         pop ax
+endm
+
+mov_cursor macro row,col 
+    mov dh, row ; row number
+    mov dl, col ; column numnber
+    mov bh, 0 ; page number
+    mov ah, 2
+    int 10h
+    
+    
 endm
 
 ;Params : microseconds as mh:ml
@@ -77,6 +90,16 @@ START:
     cmp dx,1
         jne no_collide
         inc score
+        mov p_x,0
+        mov p_y,0
+        mov cx,score
+        call printNumber
+
+        mov p_x,1
+        mov p_y,0
+        mov cx,broken_eggs
+        call printNumber
+
         mov egg_color ,0000b
         call drawEgg
         call drawBasket    
@@ -165,8 +188,6 @@ START:
     movEgg endp
     printChar proc near
         
-        mov_cursor 10,10
-
         mov dl,key
         mov dh,0
         mov ah,2 
@@ -174,6 +195,41 @@ START:
         ret
 
     printChar endp
+    
+    printNumber proc near
+        mov ax,cx
+        mov cx,10
+        mov bx,0
+  
+      
+        store_into_stack:          
+            mov dx, 0
+            div cx   
+            
+            add dx, '0'
+            push dx
+    
+            inc bx
+    
+            cmp ax, 0                       
+                jnz store_into_stack
+
+            
+    
+            mov_cursor p_x,p_y             
+            print_from_stack:
+                pop dx
+                mov ah,2 
+                int 21h  
+        
+                dec bx
+                cmp bx,0
+                jnz print_from_stack 
+        
+
+
+        ret
+    printNumber endp
 
     move_left proc near
         
@@ -316,9 +372,11 @@ START:
         cmp egg_y,190
             jne beret_
             inc broken_eggs
+            dec score
             mov dx,1
 
         beret_:
+            
             ret
 
 
