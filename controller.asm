@@ -17,34 +17,14 @@ START:
     mov ah,0
     int 10h
    
+    dec score ;Because updateScores always increments the score
+    call updateScores
   Polling:  
     call detect_collision
     call detect_broken_egg
     cmp dx,1
         jne no_collide
-        inc score
-        mov_cursor 0,0
-        lea dx,score_text
-        call printString    
-
-        mov p_x,0
-        mov p_y,8
-        mov cx,score
-        call printNumber
-        
-        jmp end_dummy_polling
-        dummy_polling:
-            jmp Polling
-        end_dummy_polling:
-        
-        mov_cursor 1,0
-        lea dx,broken_eggs_text
-        call printString    
-
-        mov p_x,1
-        mov p_y,25
-        mov cx,broken_eggs
-        call printNumber
+        call updateScores
 
         mov egg_color ,0000b
         call drawEgg
@@ -64,14 +44,14 @@ START:
     noMoveEgg:
     inc cycle
     cmp cycle,10
-        jne mod3
+        jne mod10
         mov cycle,0
-    mod3:
+    mod10:
     mov al,0h
     mov ah,01h
     int 16h
 
-    jz dummy_polling
+    jz Polling
     
     ;Get keystroke from keyboard
     mov ah,0h

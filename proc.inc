@@ -268,3 +268,26 @@ printString proc near
     
     ret
 printString endp
+
+updateScores proc near
+        inc score
+        mov_cursor 0,0
+        lea dx,score_text
+        call printString    
+
+        mov p_x,0
+        mov p_y,8
+        mov cx,score
+        call printNumber
+        
+        mov_cursor 1,0
+        lea dx,broken_eggs_text
+        call printString    
+
+        mov p_x,1
+        mov p_y,25
+        mov cx,broken_eggs
+        call printNumber
+
+    ret
+updateScores endp
