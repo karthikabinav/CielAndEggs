@@ -260,4 +260,11 @@ generateRandomNumber proc near
         
         ret
 generateRandomNumber endp
+;Load effective adress of message into dx before the call
+printString proc near
 
+    mov ah , 09h
+    int 21h
+    
+    ret
+printString endp

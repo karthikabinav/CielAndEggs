@@ -23,13 +23,26 @@ START:
     cmp dx,1
         jne no_collide
         inc score
+        mov_cursor 0,0
+        lea dx,score_text
+        call printString    
+
         mov p_x,0
-        mov p_y,0
+        mov p_y,8
         mov cx,score
         call printNumber
+        
+        jmp end_dummy_polling
+        dummy_polling:
+            jmp Polling
+        end_dummy_polling:
+        
+        mov_cursor 1,0
+        lea dx,broken_eggs_text
+        call printString    
 
         mov p_x,1
-        mov p_y,0
+        mov p_y,25
         mov cx,broken_eggs
         call printNumber
 
@@ -58,7 +71,7 @@ START:
     mov ah,01h
     int 16h
 
-    jz polling
+    jz dummy_polling
     
     ;Get keystroke from keyboard
     mov ah,0h

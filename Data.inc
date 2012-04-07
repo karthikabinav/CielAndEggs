@@ -5,6 +5,10 @@
 
 
 key db 'b' ;Holds the value of key pressed
+
+broken_eggs_text db "Number of Broken Eggs : $"
+score_text db "Score : $"
+
 pixel_row dw 1
 pixel_col dw 1
 
