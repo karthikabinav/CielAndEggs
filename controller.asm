@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include d:\CIELAN~1\PROC.inc
+include ..\CIELAN~1\PROC.inc
 
 .data
 
@@ -12,7 +12,6 @@ START:
     mov ds,ax
     mov es,ax
 
-    ;Set Graphics mode
     mov al,13h
     mov ah,0
     int 10h

@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include d:\CIELAN~1\DATA.INC
+include ..\CIELAN~1\DATA.INC
 .data
 .code
 
