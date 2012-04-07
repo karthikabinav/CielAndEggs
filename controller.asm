@@ -17,35 +17,36 @@ START:
     mov ah,0
     int 10h
    
-    dec score ;Because updateScores always increments the score
+    dec score
     call updateScores
   Polling:  
     call detect_collision
     call detect_broken_egg
     cmp dx,1
         jne no_collide
-        call updateScores
+    call updateScores
 
-        mov egg_color ,0000b
-        call drawEgg
-        call drawBasket    
-        
-        call generateRandomNumber
-        mov egg_x,dx
-
-        mov egg_y,100
-        jmp Polling
-    no_collide:    
+    mov egg_color ,0000b
+    call drawEgg
     call drawBasket    
+        
+    call generateRandomNumber
+    mov egg_x,dx
+    mov egg_y,100
     
-    cmp cycle,0
-        jne noMoveEgg
-    call movEgg
+    jmp Polling
+    no_collide:    
+        call drawBasket    
+    
+        cmp cycle,0
+            jne noMoveEgg
+        call movEgg
     noMoveEgg:
-    inc cycle
-    cmp cycle,10
-        jne mod10
+        inc cycle
+        cmp cycle,10
+            jne mod10
         mov cycle,0
+   
     mod10:
     mov al,0h
     mov ah,01h
@@ -53,21 +54,19 @@ START:
 
     jz Polling
     
-    ;Get keystroke from keyboard
     mov ah,0h
     mov al,0h
     int 16h
     
+    left:
     mov key,al
     cmp key,'a'
         jne right
-
 
         mov basket_color , 0000b
         call drawBasket
         call move_left
         mov basket_color ,1010b
-        
         
         jmp Polling
     right:

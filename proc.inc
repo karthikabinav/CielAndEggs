@@ -1,101 +1,118 @@
 .model small
 .stack 100h
 include d:\CIELAN~1\DATA.INC
-
 .data
 .code
+
+comment/*
+    Procedure to move the egg down by one pixel from (egg_x,egg_y)
+/*
 movEgg proc near
-        egg_draw: 
-        inc egg_y
-        mov egg_color,1111b
-            call drawEgg
     
-        dec egg_y
-        mov egg_color ,0000b
-        call drawEgg
-        inc egg_y
-        mov egg_color,1111b
-        call drawEgg
+    inc egg_y
+    mov egg_color,1111b
+    call drawEgg
+    
+    dec egg_y
+    mov egg_color ,0000b
+    call drawEgg
+    
+    inc egg_y
+    mov egg_color,1111b
+    call drawEgg
 
-        ret
-    end_egg_draw:
-
-
+    ret
+    
 movEgg endp
 
+comment/*
+    Prints single character on the screen
+    Requires the character to be present in variable 'key'
+/*
 printChar proc near
         
-        mov dl,key
-        mov dh,0
-        mov ah,2 
-        int 21h 
-        ret
+    mov dl,key
+    mov dh,0
+    mov ah,2 
+    int 21h 
+    
+    ret
 
 printChar endp
-    
+
+comment /*
+    Prints the number in decimal form on the screen
+    Requires cx to have the number to be printed
+    Requires p_x,p_y to have the coordinates where it has to be printed
+/*
 printNumber proc near
         mov ax,cx
         mov cx,10
         mov bx,0
   
-      
+         
         store_into_stack:          
             mov dx, 0
             div cx   
-            
             add dx, '0'
             push dx
-    
             inc bx
     
             cmp ax, 0                       
                 jnz store_into_stack
-
-            
-    
-            mov_cursor p_x,p_y             
-            print_from_stack:
-                pop dx
-                mov ah,2 
-                int 21h  
         
-                dec bx
-                cmp bx,0
+        mov_cursor p_x,p_y             
+        print_from_stack:
+            pop dx
+            mov ah,2 
+            int 21h  
+        
+            dec bx
+            cmp bx,0
                 jnz print_from_stack 
         
-
-
         ret
 printNumber endp
 
+comment/*
+    Procedure to move the basket coordinates to the left
+/*
 move_left proc near
         
-        cmp basket_x,0
-            jle lret_
-        sub basket_x,5
-        lret_:
+    cmp basket_x,0
+        jle lret_
+    sub basket_x,5
+    lret_:
         ret
 move_left endp
 
+comment/*
+    Procedure to move basket coordinates to the right
+/*
 move_right proc near
-        cmp basket_x,300
-            jge rret_
+    cmp basket_x,300
+        jge rret_
 
-        add basket_x,5
-        rret_:
+    add basket_x,5
+    rret_:
         ret
 move_right endp
-    
+
+comment/*
+    Procedure to draw the egg from (egg_x,egg_y)
+    Requires egg_x,egg_y to be set to the top left coordinates of the egg
+    Requires egg_file to have absolute path of the file having the egg shape
+/*
 drawEgg proc near
         
         mov dx,egg_x
         mov pixel_col,dx
-        
+         
         mov dx, egg_y
         mov pixel_row,dx
         
         inc pixel_col
-        ;Open the file
+        
         mov al,0        
         mov dx,offset egg_file
         mov ah,3dh
@@ -104,8 +121,6 @@ drawEgg proc near
         jc eggret_
         mov file_handle,ax
         
-        
-
         eggread:
             mov bx,file_handle    
             mov dx,offset buffer
@@ -118,35 +133,35 @@ drawEgg proc near
             cmp dx,'1'
                 jne eggnewline
             
-            
-            
             DrawPixel egg_color
-
             jmp eggcont
-            eggnewline:
-                cmp dx,10
-                    jne eggcont
+        eggnewline:
+            cmp dx,10
+                jne eggcont
                 
-                mov dx,egg_x
-                mov pixel_col,dx
-                inc pixel_row
+            mov dx,egg_x
+            mov pixel_col,dx
+            inc pixel_row
 
-            eggcont:
+        eggcont:
             inc pixel_col
             cmp ax,0
                 jne eggread
         
-
         eggret_:
-        ;Close the file
-        mov al,0
-        mov ah,3Eh
-        int 21h
+            mov al,0
+            mov ah,3Eh
+            int 21h
 
         ret
 
 drawEgg endp
 
+comment/*
+    Procedure to draw the Basket from (basket_x,basket_y)
+    Requires basket_x,basket_y to be set to the top left coordinates of the basket
+    Requires basket_file to have absolute path of the file having the basket shape
+/*
 drawBasket proc near
         
         mov dx,basket_x
@@ -155,7 +170,7 @@ drawBasket proc near
         mov dx, basket_y
         mov pixel_row,dx
 
-        ;Open the file
+        
         mov al,0        
         mov dx,offset basket_file
         mov ah,3dh
@@ -164,8 +179,6 @@ drawBasket proc near
         jc ret_
         mov file_handle,ax
         
-        
-
         read:
             mov bx,file_handle    
             mov dx,offset buffer
@@ -178,89 +191,91 @@ drawBasket proc near
             cmp dx,'1'
                 jne newline
             
-            
-            
             DrawPixel basket_color
-
             jmp cont
-            newline:
-                cmp dx,10
-                    jne cont
+        newline:
+            cmp dx,10
+               jne cont
                 
-                mov dx,basket_x
-                mov pixel_col,dx
-                inc pixel_row
+            mov dx,basket_x
+            mov pixel_col,dx
+            inc pixel_row
 
-            cont:
+        cont:
             inc pixel_col
             cmp ax,0
                 jne read
-        
-
         ret_:
-        ;Close the file
-        mov al,0
-        mov ah,3Eh
-        int 21h
+            mov al,0
+            mov ah,3Eh
+            int 21h
 
         ret
 drawBasket endp
 
+comment/*
+    Detects if the egg has fallen down
+/*
 detect_broken_egg proc near
-        cmp egg_y,190
-            jne beret_
-            inc broken_eggs
-            dec score
-            mov dx,1
+    cmp egg_y,190
+        jne beret_
+    inc broken_eggs
+    dec score
+    mov dx,1
 
-        beret_:
-            
-            ret
-
-
+    beret_:
+        ret
 detect_broken_egg endp
 
+comment/*
+    Detects if the egg collided with the basket
+/*
 detect_collision proc near
         
-        mov dx,egg_y
-        add dx,8
+    mov dx,egg_y
+    add dx,8
 
-        mov al,0
-        mov ah,0Dh
-        mov cx,egg_x
-        add cx,5
-        int 10h
+    mov al,0
+    mov ah,0Dh
+    mov cx,egg_x
+    add cx,5
+    int 10h
         
-        cmp al,1010b
-            jne collisionret_
-            mov dx,1
+    cmp al,1010b
+        jne collisionret_
+        mov dx,1
         
-        collisionret_:
-            ret
+    collisionret_:
+        ret
 detect_collision endp
     
-    ;dx has random number from 1 to 300
+comment/*
+    Generates a random number from 1 to 300. Uses the system time for generation
+    Return : Dx has the generated random number
+/*
 generateRandomNumber proc near
-       
-    
-        mov al,0
-        mov ah,2Ch
-        int 21h
+  
+    mov al,0
+    mov ah,2Ch
+    int 21h
 
-        mov dh,0
-       
-        add dx,1
-        mov ax,dx
-        mov dx,0
+    mov dh,0
+    add dx,1
+    mov ax,dx
+    mov dx,0
 
-        mov cx,300
-        div cx
+    mov cx,300
+    div cx
         
-        add dx,1
+    add dx,1
         
-        ret
+    ret
 generateRandomNumber endp
-;Load effective adress of message into dx before the call
+
+comment/*
+    Prints the string on the screen
+    Requires dx to have the effective adress of the string to be printed
+/*
 printString proc near
 
     mov ah , 09h
@@ -269,25 +284,28 @@ printString proc near
     ret
 printString endp
 
+comment/*
+    Increments score by 1 and updates the score display on the screen
+/*
 updateScores proc near
-        inc score
-        mov_cursor 0,0
-        lea dx,score_text
-        call printString    
+    inc score
+    mov_cursor 0,0
+    lea dx,score_text
+    call printString    
 
-        mov p_x,0
-        mov p_y,8
-        mov cx,score
-        call printNumber
+    mov p_x,0
+    mov p_y,8
+    mov cx,score
+    call printNumber
         
-        mov_cursor 1,0
-        lea dx,broken_eggs_text
-        call printString    
+    mov_cursor 1,0
+    lea dx,broken_eggs_text
+    call printString    
 
-        mov p_x,1
-        mov p_y,25
-        mov cx,broken_eggs
-        call printNumber
+    mov p_x,1
+    mov p_y,25
+    mov cx,broken_eggs
+    call printNumber
 
     ret
 updateScores endp
