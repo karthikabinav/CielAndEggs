@@ -24,6 +24,7 @@ START:
     checkAllEggs:
         inc bx
         mov counter,bx
+        call eggTocur 
         cmp bx,4
             jge no_collide
         cmp current_eggs[bx],1
@@ -35,9 +36,10 @@ START:
             jne checkAllEggs
         call updateScores
        
-        mov egg_color[bx] ,0000b
+        mov cur_color ,0000b
         call drawEgg
         
+        call curToegg
         jmp checkAllEggs
         
     no_collide:    
@@ -50,6 +52,7 @@ START:
         moveAllEggs:
             inc bx
             mov counter,bx
+            call eggTocur
             cmp bx,4
                 jge end_moveAllEggs
             
@@ -57,6 +60,8 @@ START:
                 jne moveAllEggs
             
             call movEgg
+            call curToegg
+
             jmp moveAllEggs
         end_MoveAllEggs: 
         call newEgg

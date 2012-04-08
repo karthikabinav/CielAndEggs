@@ -9,16 +9,16 @@ comment/*
 /*
 movEgg proc near
     
-    inc egg_y[bx]
-    mov egg_color[bx],1111b
+    inc cur_y
+    mov cur_color,1111b
     call drawEgg
     
-    dec egg_y[bx]
-    mov egg_color[bx] ,0000b
+    dec cur_y
+    mov cur_color ,0000b
     call drawEgg
     
-    inc egg_y[bx]
-    mov egg_color[bx],1111b
+    inc cur_y
+    mov cur_color,1111b
     call drawEgg
 
     mov bx,counter
@@ -110,13 +110,13 @@ comment/*
 /*
 drawEgg proc near
     
-    mov dx,egg_x[bx]
+    mov dx,cur_x
     mov top_x,dx
 
-    mov dx,egg_y[bx]
+    mov dx,cur_y
     mov top_y,dx
 
-    mov dx,egg_color[bx]
+    mov dx,cur_color
     mov color,dl
     
     mov dx,offset egg_file
@@ -153,7 +153,7 @@ comment/*
     Detects if the egg has fallen down
 /*
 detect_broken_egg proc near
-    cmp egg_y[bx],190
+    cmp cur_y,190
         jne beret_
     inc broken_eggs
     dec score
@@ -170,13 +170,13 @@ comment/*
 /*
 detect_collision proc near
         
-    mov dx,egg_y[bx]
+    mov dx,cur_y
     add dx,8
     
     push bx
     mov al,0
     mov ah,0Dh
-    mov cx,egg_x[bx]
+    mov cx,cur_x
     add cx,5
     int 10h
     pop bx
@@ -266,8 +266,7 @@ singleColorDraw proc near
     inc pixel_col
     mov cx, top_y
     mov pixel_row,cx
-
-        
+            
     mov al,0        
     mov ah,3dh
     int 21h
@@ -354,7 +353,7 @@ selectRandomHen endp
 
 newEgg proc near
     inc frequency
-    cmp frequency,130
+    cmp frequency,150
         jne doNothing
         mov frequency,0
         
@@ -375,3 +374,29 @@ newEgg proc near
         mov bx,counter
         ret
 newEgg endp
+
+eggTocur proc near
+    mov dx,egg_x[bx]
+    mov cur_x,dx
+
+    mov dx,egg_y[bx]
+    mov cur_y,dx
+
+    mov dx,egg_color[bx]
+    mov cur_color,dx
+
+    ret
+eggTocur endp
+
+curToegg proc near
+    mov dx,cur_x
+    mov egg_x[bx],dx
+
+    mov dx,cur_y
+    mov egg_y[bx],dx
+
+    mov dx,cur_color
+    mov egg_color[bx],dx
+
+    ret
+curToegg endp

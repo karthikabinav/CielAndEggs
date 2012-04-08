@@ -25,12 +25,16 @@ egg_color dw 1111b,1111b,1111b,1111b
 egg_file db "..\CIELAN~1\egg.txt$",0
 
 cycle db 0
-frequency dw 129
+frequency dw 149
 counter dw 0
 
 egg_x dw 50,100,150,200 
 egg_y dw 100,100,100,100
 current_eggs dw 0,0,0,0
+
+cur_x dw ?
+cur_y dw ?
+cur_color dw ?
 
 top_x dw 0
 top_y dw 0
