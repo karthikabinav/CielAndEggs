@@ -10,7 +10,8 @@ comment/*
 movEgg proc near
     
     inc cur_y
-    mov cur_color,1111b
+    mov cx,egg_color[bx]
+    mov cur_color,cx
     call drawEgg
     
     dec cur_y
@@ -18,7 +19,8 @@ movEgg proc near
     call drawEgg
     
     inc cur_y
-    mov cur_color,1111b
+    mov cx,egg_color[bx]
+    mov cur_color,cx
     call drawEgg
 
     mov bx,counter
@@ -155,11 +157,21 @@ comment/*
 detect_broken_egg proc near
     cmp cur_y,190
         jne beret_
+    
+    cmp egg_color[bx],0100b
+        jne not_poison
+        dec broken_eggs
+        inc score
+
+    not_poison:
     inc broken_eggs
     dec score
     mov current_eggs[bx],0
     mov dx,1
-
+    
+    cmp egg_color[bx],1110b
+        jne beret_
+        dec score
     beret_:
         mov bx,counter
         ret
@@ -185,7 +197,14 @@ detect_collision proc near
         jne collisionret_
         mov dx,1
         mov current_eggs[bx],0
-
+   cmp egg_color[bx],0100b
+        jne collisionret_
+        cmp score,0
+            je gameover
+        dec score
+        jmp collisionret_
+        gameover:
+            mov game_over,1
     collisionret_:
         mov bx,counter
         ret
@@ -211,7 +230,6 @@ generateRandomNumber proc near
     mov cx,4
     div cx
     
-    mov bx,counter
     ret
 generateRandomNumber endp
 
@@ -233,10 +251,23 @@ comment/*
 /*
 updateScores proc near
     inc score
+    cmp egg_color[bx],1110b
+        jne checkPoison
+        inc score
+    checkPoison:
+        cmp egg_color[bx],0100b
+            jne normalEgg
+            dec score
+    normalEgg:
     mov_cursor 0,0
     lea dx,score_text
     call printString    
-
+    
+    ;Clearing the next 5 pixels
+    mov_cursor 0,8
+    lea dx,space
+    call printString
+   
     mov p_x,0
     mov p_y,8
     mov cx,score
@@ -316,6 +347,25 @@ selectRandomHen proc near
         mov bx,dx
     cmp current_eggs[bx],1
         je used
+    
+        call generateRandomNumber
+        cmp dx,0
+            jne rand_one
+            mov egg_color[bx],1111b
+            jmp zero
+    rand_one:
+        cmp dx,1
+            jne rand_two
+            mov egg_color[bx],1111b
+            jmp zero
+    rand_two:
+        cmp dx,2
+            jne rand_three
+            mov egg_color[bx],1110b
+            jmp zero
+    rand_three:
+        mov egg_color[bx],0100b
+
     zero:
         cmp bx,0
             jne one

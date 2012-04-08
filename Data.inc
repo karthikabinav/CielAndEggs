@@ -18,7 +18,7 @@ basket_y dw 190
 file_handle dw ?
 buffer dw ?
 broken_eggs dw 0
-score dw 0
+score dw 10
 
 ;Egg details
 egg_color dw 1111b,1111b,1111b,1111b
@@ -27,6 +27,9 @@ egg_file db "..\CIELAN~1\egg.txt$",0
 cycle db 0
 frequency dw 149
 counter dw 0
+
+space db "      $"
+game_over db 0
 
 egg_x dw 50,100,150,200 
 egg_y dw 100,100,100,100
