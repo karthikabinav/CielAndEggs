@@ -35,7 +35,9 @@ START:
         cmp dx,1
             jne checkAllEggs
         call updateScores
-       
+        cmp game_over,1
+            jge dummy_endOfGame
+        
         mov cur_color ,0000b
         call drawEgg
         
@@ -78,6 +80,10 @@ START:
 
     jz Polling
     
+    jmp end_dummy_endOfGame
+    dummy_endOfGame:
+        jmp endOfGame
+    end_dummy_endOfGame:
     mov ah,0h
     mov al,0h
     int 16h
@@ -108,7 +114,8 @@ START:
             je RETURN_CONTROL
     
             jmp Polling
-
+    
+    endOfGame:
     RETURN_CONTROL:
     mov ax,4c00h
     int 21h

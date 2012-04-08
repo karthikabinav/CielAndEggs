@@ -282,6 +282,10 @@ updateScores proc near
     mov cx,broken_eggs
     call printNumber
     
+    cmp broken_eggs,7 ; 7 broken eggs and game over
+        jne notGameOver
+        mov game_over,1
+    notGameOver:
     mov bx,counter
     ret
 updateScores endp
@@ -341,6 +345,9 @@ singleColorDraw proc near
     ret
 singleColorDraw endp
 
+comment/*
+    Selects a random hen and random egg type
+/*
 selectRandomHen proc near
     used:
         call generateRandomNumber
@@ -401,9 +408,12 @@ selectRandomHen proc near
 
 selectRandomHen endp
 
+comment/*
+    Selects if a new egg has to be dropped based on frequency
+/*
 newEgg proc near
     inc frequency
-    cmp frequency,150
+    cmp frequency,160
         jne doNothing
         mov frequency,0
         
@@ -425,6 +435,9 @@ newEgg proc near
         ret
 newEgg endp
 
+comment/*
+    moves egg[bx] attributes to cur attributes
+/*
 eggTocur proc near
     mov dx,egg_x[bx]
     mov cur_x,dx
@@ -438,6 +451,9 @@ eggTocur proc near
     ret
 eggTocur endp
 
+comment/*
+    moves cur attributes to egg[bx] attributes
+/*
 curToegg proc near
     mov dx,cur_x
     mov egg_x[bx],dx
