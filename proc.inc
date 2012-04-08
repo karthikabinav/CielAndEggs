@@ -21,6 +21,7 @@ movEgg proc near
     mov egg_color[bx],1111b
     call drawEgg
 
+    mov bx,counter
     ret
     
 movEgg endp
@@ -36,6 +37,7 @@ printChar proc near
     mov ah,2 
     int 21h 
     
+    mov bx,counter
     ret
 
 printChar endp
@@ -71,6 +73,7 @@ printNumber proc near
             cmp bx,0
                 jnz print_from_stack 
         
+        mov bx,counter
         ret
 printNumber endp
 
@@ -83,6 +86,7 @@ move_left proc near
         jle lret_
     sub basket_x,5
     lret_:
+        mov bx,counter
         ret
 move_left endp
 
@@ -95,6 +99,7 @@ move_right proc near
 
     add basket_x,5
     rret_:
+        mov bx,counter
         ret
 move_right endp
 
@@ -111,12 +116,13 @@ drawEgg proc near
     mov dx,egg_y[bx]
     mov top_y,dx
 
-    mov dl,egg_color[bx]
+    mov dx,egg_color[bx]
     mov color,dl
     
     mov dx,offset egg_file
     call singleColorDraw
-
+    
+    mov bx,counter
     ret
 drawEgg endp
 
@@ -130,7 +136,6 @@ drawBasket proc near
       mov dx,basket_x
       mov top_x,dx
       
-
       mov dx,basket_y
       mov top_y,dx
     
@@ -139,7 +144,8 @@ drawBasket proc near
     
       mov dx,offset basket_file
       call singleColorDraw
-
+        
+      mov bx,counter
       ret
 drawBasket endp
 
@@ -155,6 +161,7 @@ detect_broken_egg proc near
     mov dx,1
 
     beret_:
+        mov bx,counter
         ret
 detect_broken_egg endp
 
@@ -165,25 +172,28 @@ detect_collision proc near
         
     mov dx,egg_y[bx]
     add dx,8
-
+    
+    push bx
     mov al,0
     mov ah,0Dh
     mov cx,egg_x[bx]
     add cx,5
     int 10h
-        
+    pop bx
+
     cmp al,1010b
         jne collisionret_
         mov dx,1
         mov current_eggs[bx],0
 
     collisionret_:
+        mov bx,counter
         ret
 detect_collision endp
     
 comment/*
     Generates a random number from 0 to 3. Uses the system time for generation
-    Return : bx has the generated random number
+    Return : dx has the generated random number
 /*
 generateRandomNumber proc near
   
@@ -191,16 +201,17 @@ generateRandomNumber proc near
     mov ah,2Ch
     int 21h
 
+    add dl,dh
     mov dh,0
+    
     add dx,1
     mov ax,dx
     mov dx,0
 
     mov cx,4
     div cx
-        
-    mov bx,dx
-        
+    
+    mov bx,counter
     ret
 generateRandomNumber endp
 
@@ -213,6 +224,7 @@ printString proc near
     mov ah , 09h
     int 21h
     
+    mov bx,counter
     ret
 printString endp
 
@@ -238,7 +250,8 @@ updateScores proc near
     mov p_y,25
     mov cx,broken_eggs
     call printNumber
-
+    
+    mov bx,counter
     ret
 updateScores endp
 
@@ -247,12 +260,12 @@ comment/*
     Requires color to be set to the pixel color to be drawn
 /*
 singleColorDraw proc near
-    mov bx,top_x
-    mov pixel_col,bx
+    mov cx,top_x
+    mov pixel_col,cx
     
     inc pixel_col
-    mov bx, top_y
-    mov pixel_row,bx
+    mov cx, top_y
+    mov pixel_row,cx
 
         
     mov al,0        
@@ -294,31 +307,35 @@ singleColorDraw proc near
     mov ah,3Eh
     int 21h
 
+    mov bx,counter
     ret
 singleColorDraw endp
 
 selectRandomHen proc near
-    call generateRandomNumber
-    
+    used:
+        call generateRandomNumber
+        mov bx,dx
+    cmp current_eggs[bx],1
+        je used
     zero:
         cmp bx,0
             jne one
-            mov egg_x[0],5
-            mov egg_y[0],80
+            mov egg_x[0],50
+            mov egg_y[0],40
             mov current_eggs[0],1
             jmp endSwitch
     one:
         cmp bx,1
             jne two
-            mov egg_x[1],270
-            mov egg_y[1],80
+            mov egg_x[1],150
+            mov egg_y[1],40
             mov current_eggs[1],1
             jmp endSwitch
     two:
         cmp bx,2
             jne three
-            mov egg_x[2],50
-            mov egg_y[2],130
+            mov egg_x[2],100
+            mov egg_y[2],70
             mov current_eggs[2],1
             jmp endSwitch
     
@@ -326,23 +343,35 @@ selectRandomHen proc near
         cmp bx,3
             jne endSwitch
             mov egg_x[3],200
-            mov egg_y[3],130
+            mov egg_y[3],70
             mov current_eggs[3],1
             
     endSwitch:
+        mov bx,counter
         ret
 
 selectRandomHen endp
 
 newEgg proc near
     inc frequency
-    cmp frequency,5
+    cmp frequency,130
         jne doNothing
         mov frequency,0
         
+        mov bx,0
+        dec bx
+        
+        checkIfAllDropped:
+            inc bx
+            cmp bx,4
+                jge doNothing
+            cmp current_eggs[bx],0
+                jne checkIfAllDropped
+
         call selectRandomHen
         
 
     doNothing:
+        mov bx,counter
         ret
 newEgg endp

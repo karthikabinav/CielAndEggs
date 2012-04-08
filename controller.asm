@@ -23,18 +23,19 @@ START:
     dec bx
     checkAllEggs:
         inc bx
+        mov counter,bx
         cmp bx,4
             jge no_collide
         cmp current_eggs[bx],1
             jne checkAllEggs
-        
+       
         call detect_collision
         call detect_broken_egg
         cmp dx,1
-            jne no_collide
+            jne checkAllEggs
         call updateScores
-
-        mov egg_color ,0000b
+       
+        mov egg_color[bx] ,0000b
         call drawEgg
         
         jmp checkAllEggs
@@ -48,10 +49,13 @@ START:
         dec bx
         moveAllEggs:
             inc bx
+            mov counter,bx
             cmp bx,4
                 jge end_moveAllEggs
+            
             cmp current_eggs[bx],1
                 jne moveAllEggs
+            
             call movEgg
             jmp moveAllEggs
         end_MoveAllEggs: 
