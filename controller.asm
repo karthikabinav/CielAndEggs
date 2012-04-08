@@ -19,27 +19,43 @@ START:
     dec score
     call updateScores
   Polling:  
-    call detect_collision
-    call detect_broken_egg
-    cmp dx,1
-        jne no_collide
-    call updateScores
-
-    mov egg_color ,0000b
-    call drawEgg
-    call drawBasket    
+    mov bx,0
+    dec bx
+    checkAllEggs:
+        inc bx
+        cmp bx,4
+            jge no_collide
+        cmp current_eggs[bx],1
+            jne checkAllEggs
         
-    call generateRandomNumber
-    mov egg_x,dx
-    mov egg_y,100
-    
-    jmp Polling
+        call detect_collision
+        call detect_broken_egg
+        cmp dx,1
+            jne no_collide
+        call updateScores
+
+        mov egg_color ,0000b
+        call drawEgg
+        
+        jmp checkAllEggs
+        
     no_collide:    
         call drawBasket    
     
         cmp cycle,0
             jne noMoveEgg
-        call movEgg
+        mov bx,0
+        dec bx
+        moveAllEggs:
+            inc bx
+            cmp bx,4
+                jge end_moveAllEggs
+            cmp current_eggs[bx],1
+                jne moveAllEggs
+            call movEgg
+            jmp moveAllEggs
+        end_MoveAllEggs: 
+        call newEgg
     noMoveEgg:
         inc cycle
         cmp cycle,10

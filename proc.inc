@@ -9,16 +9,16 @@ comment/*
 /*
 movEgg proc near
     
-    inc egg_y
-    mov egg_color,1111b
+    inc egg_y[bx]
+    mov egg_color[bx],1111b
     call drawEgg
     
-    dec egg_y
-    mov egg_color ,0000b
+    dec egg_y[bx]
+    mov egg_color[bx] ,0000b
     call drawEgg
     
-    inc egg_y
-    mov egg_color,1111b
+    inc egg_y[bx]
+    mov egg_color[bx],1111b
     call drawEgg
 
     ret
@@ -104,57 +104,20 @@ comment/*
     Requires egg_file to have absolute path of the file having the egg shape
 /*
 drawEgg proc near
-        
-        mov dx,egg_x
-        mov pixel_col,dx
-         
-        mov dx, egg_y
-        mov pixel_row,dx
-        
-        inc pixel_col
-        
-        mov al,0        
-        mov dx,offset egg_file
-        mov ah,3dh
-        int 21h
-        
-        jc eggret_
-        mov file_handle,ax
-        
-        eggread:
-            mov bx,file_handle    
-            mov dx,offset buffer
-            mov al,0
-            mov cx,1
-            mov ah,3Fh
-            int 21h
+    
+    mov dx,egg_x[bx]
+    mov top_x,dx
 
-            mov dx,buffer 
-            cmp dx,'1'
-                jne eggnewline
-            
-            DrawPixel egg_color
-            jmp eggcont
-        eggnewline:
-            cmp dx,10
-                jne eggcont
-                
-            mov dx,egg_x
-            mov pixel_col,dx
-            inc pixel_row
+    mov dx,egg_y[bx]
+    mov top_y,dx
 
-        eggcont:
-            inc pixel_col
-            cmp ax,0
-                jne eggread
-        
-        eggret_:
-            mov al,0
-            mov ah,3Eh
-            int 21h
+    mov dl,egg_color[bx]
+    mov color,dl
+    
+    mov dx,offset egg_file
+    call singleColorDraw
 
-        ret
-
+    ret
 drawEgg endp
 
 comment/*
@@ -164,63 +127,31 @@ comment/*
 /*
 drawBasket proc near
         
-        mov dx,basket_x
-        mov pixel_col,dx
-        
-        mov dx, basket_y
-        mov pixel_row,dx
+      mov dx,basket_x
+      mov top_x,dx
+      
 
-        
-        mov al,0        
-        mov dx,offset basket_file
-        mov ah,3dh
-        int 21h
-        
-        jc ret_
-        mov file_handle,ax
-        
-        read:
-            mov bx,file_handle    
-            mov dx,offset buffer
-            mov al,0
-            mov cx,1
-            mov ah,3Fh
-            int 21h
+      mov dx,basket_y
+      mov top_y,dx
+    
+      mov dl,basket_color
+      mov color,dl
+    
+      mov dx,offset basket_file
+      call singleColorDraw
 
-            mov dx,buffer 
-            cmp dx,'1'
-                jne newline
-            
-            DrawPixel basket_color
-            jmp cont
-        newline:
-            cmp dx,10
-               jne cont
-                
-            mov dx,basket_x
-            mov pixel_col,dx
-            inc pixel_row
-
-        cont:
-            inc pixel_col
-            cmp ax,0
-                jne read
-        ret_:
-            mov al,0
-            mov ah,3Eh
-            int 21h
-
-        ret
+      ret
 drawBasket endp
 
 comment/*
     Detects if the egg has fallen down
 /*
 detect_broken_egg proc near
-    cmp egg_y,190
+    cmp egg_y[bx],190
         jne beret_
     inc broken_eggs
     dec score
+    mov current_eggs[bx],0
     mov dx,1
 
     beret_:
@@ -232,26 +163,27 @@ comment/*
 /*
 detect_collision proc near
         
-    mov dx,egg_y
+    mov dx,egg_y[bx]
     add dx,8
 
     mov al,0
     mov ah,0Dh
-    mov cx,egg_x
+    mov cx,egg_x[bx]
     add cx,5
     int 10h
         
     cmp al,1010b
         jne collisionret_
         mov dx,1
-        
+        mov current_eggs[bx],0
+
     collisionret_:
         ret
 detect_collision endp
     
 comment/*
-    Generates a random number from 1 to 300. Uses the system time for generation
-    Return : Dx has the generated random number
+    Generates a random number from 0 to 3. Uses the system time for generation
+    Return : bx has the generated random number
 /*
 generateRandomNumber proc near
   
@@ -264,10 +196,10 @@ generateRandomNumber proc near
     mov ax,dx
     mov dx,0
 
-    mov cx,300
+    mov cx,4
     div cx
         
-    add dx,1
+    mov bx,dx
         
     ret
 generateRandomNumber endp
@@ -309,3 +241,108 @@ updateScores proc near
 
     ret
 updateScores endp
+
+comment/*
+    Reads from file dx and draws from (top_x,top_y)
+    Requires color to be set to the pixel color to be drawn
+/*
+singleColorDraw proc near
+    mov bx,top_x
+    mov pixel_col,bx
+    
+    inc pixel_col
+    mov bx, top_y
+    mov pixel_row,bx
+
+        
+    mov al,0        
+    mov ah,3dh
+    int 21h
+        
+    jc ret_
+    mov file_handle,ax
+        
+    read:
+    mov bx,file_handle    
+    mov dx,offset buffer
+    mov al,0
+    mov cx,1
+    mov ah,3Fh
+    int 21h
+
+    mov dx,buffer 
+    cmp dx,'1'
+    jne newline
+            
+    DrawPixel
+    jmp cont
+    newline:
+    cmp dx,10
+    jne cont
+                
+    mov dx,top_x
+    mov pixel_col,dx
+    inc pixel_row
+
+    cont:
+    inc pixel_col
+    cmp ax,0
+    jne read
+    
+    ret_:
+    mov al,0
+    mov ah,3Eh
+    int 21h
+
+    ret
+singleColorDraw endp
+
+selectRandomHen proc near
+    call generateRandomNumber
+    
+    zero:
+        cmp bx,0
+            jne one
+            mov egg_x[0],5
+            mov egg_y[0],80
+            mov current_eggs[0],1
+            jmp endSwitch
+    one:
+        cmp bx,1
+            jne two
+            mov egg_x[1],270
+            mov egg_y[1],80
+            mov current_eggs[1],1
+            jmp endSwitch
+    two:
+        cmp bx,2
+            jne three
+            mov egg_x[2],50
+            mov egg_y[2],130
+            mov current_eggs[2],1
+            jmp endSwitch
+    
+    three:
+        cmp bx,3
+            jne endSwitch
+            mov egg_x[3],200
+            mov egg_y[3],130
+            mov current_eggs[3],1
+            
+    endSwitch:
+        ret
+
+selectRandomHen endp
+
+newEgg proc near
+    inc frequency
+    cmp frequency,5
+        jne doNothing
+        mov frequency,0
+        
+        call selectRandomHen
+        
+
+    doNothing:
+        ret
+newEgg endp

@@ -11,7 +11,7 @@ pixel_col dw 1
 
 ;Basket details
 basket_color db 1010b
-basket_file db "..\CIELAN~1\basket.txt",0
+basket_file db "..\CIELAN~1\basket.txt$",0
 basket_x dw 150
 basket_y dw 190
 
@@ -21,11 +21,19 @@ broken_eggs dw 0
 score dw 0
 
 ;Egg details
-egg_color db 1111b
-egg_file db "..\CIELAN~1\egg.txt",0
-cycle db 0,0,0,0,0
-egg_x dw 50,100,150,200,250 
-egg_y dw 100,100,100,100,100
+egg_color db 1111b,1111b,1111b,1111b
+egg_file db "..\CIELAN~1\egg.txt$",0
+
+cycle db 0
+frequency db 4
+
+egg_x dw 50,100,150,200 
+egg_y dw 100,100,100,100
+current_eggs dw 0,0,0,0
+
+top_x dw 0
+top_y dw 0
+color db 1111b
 
 ;Variables to store values of where to print
 p_x db 0
@@ -34,9 +42,8 @@ p_y db 0
 comment /*
     Macro to color a pixel
     requires pixel_row,pixel_col variables to be set to the coordinate to be colored
-    @params : color
 /*
-DrawPixel macro color
+DrawPixel macro 
         push ax
         push cx
         push dx
