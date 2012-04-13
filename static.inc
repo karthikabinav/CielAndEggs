@@ -160,25 +160,25 @@ comment/*
 drawAllHens proc near
     
     mov hen_x,45
-    mov hen_y,25
+    mov hen_y,20
     mov dx,offset hen_file
     
     call drawHen
     
     mov hen_x,145
-    mov hen_y,25
+    mov hen_y,20
     mov dx,offset hen_file
     
     call drawHen
 
     mov hen_x,95
-    mov hen_y,55
+    mov hen_y,50
     mov dx,offset hen_file
     
     call drawHen
 
     mov hen_x,195
-    mov hen_y,55
+    mov hen_y,50
     mov dx,offset hen_file
     
     call drawHen
@@ -188,3 +188,49 @@ drawAllHens proc near
     ret
 drawAllHens endp
 
+comment/*
+    initialises the mouse
+/*
+initialiseCursor proc near
+    mov ax,0
+    int 33h
+    ret
+initialiseCursor endp
+
+comment/*
+    Hides the mouse pointer
+/*
+hideCursor proc near
+    mov ax,2
+    int 33h
+    ret
+hideCursor endp
+
+comment/*
+    Get the cursor positions
+/*
+cursorPosition proc near
+    mov ax,3
+    int 33h
+
+    mov mouse_x,cx
+    
+    ret
+cursorPosition endp
+
+comment/*
+    Moves the basket based on the mouse
+/*
+
+mouseMove proc near
+    call cursorPosition
+    mov basket_color , 0000b
+    call drawBasket
+    
+    mov dx,mouse_x
+    mov basket_x,dx
+        
+    mov basket_color ,1010b
+    
+    ret
+mouseMove endp

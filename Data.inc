@@ -38,6 +38,9 @@ egg_x dw 50,100,150,200
 egg_y dw 100,100,100,100
 current_eggs dw 0,0,0,0
 
+mouse_x dw ?
+is_mouse db 0
+
 cur_x dw ?
 cur_y dw ?
 cur_color dw ?

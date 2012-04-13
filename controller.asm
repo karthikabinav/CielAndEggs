@@ -15,11 +15,13 @@ START:
     mov al,13h
     mov ah,0
     int 10h
-    
-   call drawAllHens
-   dec score
-   call updateScores
+   
+    call drawAllHens
+    dec score
+    call updateScores
   Polling:  
+    call initialiseCursor
+    call hideCursor
     mov bx,0
     dec bx
     checkAllEggs:
@@ -74,14 +76,23 @@ START:
             jne mod10
         mov cycle,0
     
+        jmp end_dummy_Polling
+        dummy_Polling:
+            jmp Polling
+        end_dummy_Polling:
     mod10:
+    cmp is_mouse ,1
+        je mouse
+    
     mov al,0h
     mov ah,01h
     int 16h
 
-    jz Polling
-    
-    jmp end_dummy_endOfGame
+    jz dummy_Polling    
+    jnz end_dummy_endOfGame 
+    mouse:
+        ;call mouseMove
+        jmp Polling
     dummy_endOfGame:
         jmp endOfGame
     end_dummy_endOfGame:
