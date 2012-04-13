@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include ..\CIELAN~1\PROC.inc
+include ..\CIELAN~1\STATIC.inc
 
 .data
 
@@ -15,9 +15,10 @@ START:
     mov al,13h
     mov ah,0
     int 10h
-   
-    dec score
-    call updateScores
+    
+   call drawAllHens
+   dec score
+   call updateScores
   Polling:  
     mov bx,0
     dec bx
@@ -72,7 +73,7 @@ START:
         cmp cycle,10
             jne mod10
         mov cycle,0
-   
+    
     mod10:
     mov al,0h
     mov ah,01h
