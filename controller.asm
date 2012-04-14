@@ -85,18 +85,13 @@ START:
             jmp Polling
         end_dummy_Polling:
     mod10:
-    cmp is_mouse ,1
-        je mouse
-    
+        
     mov al,0h
     mov ah,01h
     int 16h
 
     jz dummy_Polling    
-    jnz end_dummy_endOfGame 
-    mouse:
-        call mouseMove
-        jmp Polling 
+    jmp end_dummy_endOfGame     
     dummy_endOfGame:
         jmp endOfGame
     end_dummy_endOfGame:

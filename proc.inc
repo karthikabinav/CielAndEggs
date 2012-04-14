@@ -297,7 +297,7 @@ comment/*
 /*
 newEgg proc near
     inc frequency
-    cmp frequency,50
+    cmp frequency,70
         jne doNothing
         mov frequency,0
         

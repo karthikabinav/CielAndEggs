@@ -190,56 +190,6 @@ drawAllHens proc near
 drawAllHens endp
 
 comment/*
-    initialises the mouse
-/*
-initialiseCursor proc near
-    mov ax,0
-    int 33h
-    ret
-initialiseCursor endp
-
-comment/*
-    Hides the mouse pointer
-/*
-hideCursor proc near
-    mov ax,2
-    int 33h
-    ret
-hideCursor endp
-
-comment/*
-    Get the cursor positions
-/*
-cursorPosition proc near
-    mov ax,3
-    int 33h
-    
-    mov ax,cx
-    mov cx,2
-    div cx
-
-    mov mouse_x,ax
-    
-    ret
-cursorPosition endp
-
-comment/*
-    Moves the basket based on the mouse
-/*
-
-mouseMove proc near
-    call cursorPosition
-    mov basket_color , 0000b
-    call drawBasket
-    
-    mov dx,mouse_x
-    mov basket_x,dx
-        
-    mov basket_color ,1010b
-    ret
-mouseMove endp
-
-comment/*
     Draws the wires
 /*
 drawWires proc near
