@@ -37,7 +37,7 @@ START:
     mov p_x,0
     mov p_y,195
     call readHighScore
-    mov cx,dx
+    mov cx,i
     call printNumber
 
     Polling:  
@@ -161,7 +161,9 @@ START:
         call readHighScore
         cmp score,dx
             jle DOS_MODE
-            ;call writeHighScore
+        mov cx,score
+        call printNumber
+        call writeHighScore
     DOS_MODE:
     mov ax,4c00h
     int 21h

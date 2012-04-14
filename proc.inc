@@ -398,33 +398,84 @@ readHighScore proc near
     lea dx,high_file
     int 21h
     
-    mov bx,ax
+    jc return_i
+    mov file_handle,ax
     mov i,0
     while_read:
+        mov bx,file_handle
+        mov dx,offset buffer
         mov al,0
         mov ah,3fh
         mov cx,1
-        lea dx,buffer
         int 21h
         
-        cmp ax,0
+        mov dx,buffer
+        cmp dx,10
             je return_i
-            
-            mov dx,buffer[0]
-            sub dx,'0'
-            push dx
-            mov ax,i
-            mov cx,10
-            mul cx
-            pop dx
-            add ax,dx
-            mov i,ax
-            jmp while_read  
+        sub dx,'0'
+        push dx
+        mov ax,i
+        mov cx,10
+        mul cx
+        pop dx
+        add ax,dx
+        mov i,ax
+        jmp while_read  
 
     return_i:
-        mov dx,i
+        
         mov al,0
         mov ah,3Eh
         int 21h
         ret
 readHighScore endp
+
+comment/*
+    Writes the highscore into the file
+    
+/*
+
+writeHighScore proc near
+    
+    mov al,1
+    mov ah,3dh
+    lea dx,high_file
+    int 21h
+    
+    mov file_handle,ax
+    
+    mov cx,score
+    mov ax,cx
+    mov cx,10
+    mov bx,0
+                
+    stack_store:          
+        mov dx, 0
+        div cx   
+        add dx, '0'
+        push dx
+        inc bx
+    
+        cmp ax, 0                       
+            jnz stack_store
+        
+    mov i,bx             
+    write_from_stack:
+       pop dx
+       mov buffer,dx
+       lea dx,buffer
+       mov bx,file_handle
+       mov cx,1
+       mov ah,40h 
+       int 21h  
+        
+       dec i
+       cmp i,0
+          jnz write_from_stack 
+        
+      mov al,1
+      mov ah,3Eh
+      int 21h
+
+      ret
+writeHighScore endp
