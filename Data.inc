@@ -28,7 +28,7 @@ egg_color dw 1111b,1111b,1111b,1111b
 egg_file db "..\CIELAN~1\egg.txt$",0
 
 cycle db 0
-frequency dw 159
+frequency dw 89
 counter dw 0
 
 space db "      $"

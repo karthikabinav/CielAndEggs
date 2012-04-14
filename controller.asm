@@ -23,12 +23,12 @@ START:
     call initialiseCursor
     call hideCursor
     mov bx,0
-    dec bx
+    sub bx,2
     checkAllEggs:
-        inc bx
+        add bx,2
         mov counter,bx
         call eggTocur 
-        cmp bx,4
+        cmp bx,8
             jge no_collide
         cmp current_eggs[bx],1
             jne checkAllEggs
@@ -36,7 +36,7 @@ START:
         call detect_collision
         call detect_broken_egg
         cmp dx,1
-            jne checkAllEggs
+            jne no_collide
         call updateScores
         cmp game_over,1
             jge dummy_endOfGame
@@ -44,30 +44,23 @@ START:
         mov cur_color ,0000b
         call drawEgg
         
-        call curToegg
-        jmp checkAllEggs
         
     no_collide:    
         call drawBasket    
     
         cmp cycle,0
             jne noMoveEgg
-        mov bx,0
-        dec bx
-        moveAllEggs:
-            inc bx
-            mov counter,bx
-            call eggTocur
-            cmp bx,4
-                jge end_moveAllEggs
+        
+        cmp bx,8
+            jge end_moveAllEggs
             
-            cmp current_eggs[bx],1
-                jne moveAllEggs
+        cmp current_eggs[bx],1
+            jne checkAllEggs
             
             call movEgg
             call curToegg
 
-            jmp moveAllEggs
+            jmp checkAllEggs
         end_MoveAllEggs: 
         call newEgg
     noMoveEgg:

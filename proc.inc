@@ -226,7 +226,10 @@ comment/*
 selectRandomHen proc near
     used:
         call generateRandomNumber
-        mov bx,dx
+        mov ax,dx
+        mov cx,2
+        mul cx
+        mov bx,ax
     cmp current_eggs[bx],1
         je used
     
@@ -256,26 +259,26 @@ selectRandomHen proc near
             mov current_eggs[0],1
             jmp endSwitch
     one:
-        cmp bx,1
+        cmp bx,2
             jne two
-            mov egg_x[1],150
-            mov egg_y[1],40
-            mov current_eggs[1],1
+            mov egg_x[2],150
+            mov egg_y[2],40
+            mov current_eggs[2],1
             jmp endSwitch
     two:
-        cmp bx,2
+        cmp bx,4
             jne three
-            mov egg_x[2],100
-            mov egg_y[2],70
-            mov current_eggs[2],1
+            mov egg_x[4],100
+            mov egg_y[4],70
+            mov current_eggs[4],1
             jmp endSwitch
     
     three:
-        cmp bx,3
+        cmp bx,6
             jne endSwitch
-            mov egg_x[3],200
-            mov egg_y[3],70
-            mov current_eggs[3],1
+            mov egg_x[6],200
+            mov egg_y[6],70
+            mov current_eggs[6],1
             
     endSwitch:
         mov bx,counter
@@ -288,16 +291,15 @@ comment/*
 /*
 newEgg proc near
     inc frequency
-    cmp frequency,160
+    cmp frequency,90
         jne doNothing
         mov frequency,0
         
         mov bx,0
-        dec bx
-        
+        sub bx,2
         checkIfAllDropped:
-            inc bx
-            cmp bx,4
+            add bx,2
+            cmp bx,8
                 jge doNothing
             cmp current_eggs[bx],0
                 jne checkIfAllDropped
