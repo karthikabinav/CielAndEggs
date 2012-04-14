@@ -160,25 +160,25 @@ comment/*
 drawAllHens proc near
     
     mov hen_x,45
-    mov hen_y,20
+    mov hen_y,30
     mov dx,offset hen_file
     
     call drawHen
     
-    mov hen_x,145
-    mov hen_y,20
-    mov dx,offset hen_file
-    
-    call drawHen
-
-    mov hen_x,95
-    mov hen_y,50
+    mov hen_x,165
+    mov hen_y,30
     mov dx,offset hen_file
     
     call drawHen
 
-    mov hen_x,195
-    mov hen_y,50
+    mov hen_x,105
+    mov hen_y,60
+    mov dx,offset hen_file
+    
+    call drawHen
+
+    mov hen_x,225
+    mov hen_y,60
     mov dx,offset hen_file
     
     call drawHen

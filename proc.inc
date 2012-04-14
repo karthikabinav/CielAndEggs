@@ -155,8 +155,10 @@ generateRandomNumber proc near
     
     add dx,1
     mov ax,dx
+    add ax,score
+    add ax,broken_eggs
     mov dx,0
-
+    
     mov cx,4
     div cx
     
@@ -255,29 +257,29 @@ selectRandomHen proc near
         cmp bx,0
             jne one
             mov egg_x[0],50
-            mov egg_y[0],40
+            mov egg_y[0],50
             mov current_eggs[0],1
             jmp endSwitch
     one:
         cmp bx,2
             jne two
-            mov egg_x[2],150
-            mov egg_y[2],40
+            mov egg_x[2],170
+            mov egg_y[2],50
             mov current_eggs[2],1
             jmp endSwitch
     two:
         cmp bx,4
             jne three
-            mov egg_x[4],100
-            mov egg_y[4],70
+            mov egg_x[4],110
+            mov egg_y[4],80
             mov current_eggs[4],1
             jmp endSwitch
     
     three:
         cmp bx,6
             jne endSwitch
-            mov egg_x[6],200
-            mov egg_y[6],70
+            mov egg_x[6],230
+            mov egg_y[6],80
             mov current_eggs[6],1
             
     endSwitch:
@@ -291,7 +293,7 @@ comment/*
 /*
 newEgg proc near
     inc frequency
-    cmp frequency,90
+    cmp frequency,50
         jne doNothing
         mov frequency,0
         
