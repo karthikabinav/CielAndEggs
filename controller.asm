@@ -129,9 +129,11 @@ START:
     exit:
         cmp key,'x'
             je RETURN_CONTROL
-    
+    pause:
+        cmp key,'p'
+            jne dummy_Polling
+            call pauseGame
             jmp Polling
-    
     endOfGame:
     call GameOverScreen
     jmp DOS_MODE

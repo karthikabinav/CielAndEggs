@@ -12,6 +12,8 @@ input db 0
 
 key db 'b' 
 
+paused_text db "Paused$"
+
 broken_eggs_text db "Number of Broken Eggs : $"
 score_text db "Score : $"
 

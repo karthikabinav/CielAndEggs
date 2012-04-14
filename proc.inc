@@ -357,3 +357,31 @@ curToegg proc near
 
     ret
 curToegg endp
+
+comment/*
+    Function to pause the game
+/*
+
+pauseGame proc near
+    mov_cursor 220,0
+    lea dx,paused_text
+    call printString
+    keyboard_buffer:
+    mov ah,0h
+    mov al,0h
+    int 16h
+
+    cmp al,'p'
+        je resume
+        jmp keyboard_buffer
+    resume:
+        mov_cursor 220,0
+        lea dx,space
+        call printString
+        
+        mov_cursor 225,0
+        lea dx,space
+        call printString
+
+        ret
+pauseGame endp
