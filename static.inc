@@ -222,3 +222,18 @@ drawCutWires proc near
     ret
 drawCutWires endp
 
+comment/*
+    Draws the sprite of the egg breaking animation
+/*
+spriteEgg proc near
+    mov dx,cur_x
+    mov top_x,dx
+
+    mov top_y,190
+
+    mov dx,offset sprite_file
+    call singleColorDraw
+    
+    mov bx,counter
+    ret
+spriteEgg endp

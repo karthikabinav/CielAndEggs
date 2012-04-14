@@ -21,11 +21,14 @@ pixel_col dw 1
 hen_file db "..\CIELAN~1\hen.txt$",0
 hen_x dw 100
 hen_y dw 100
+
 ;Basket details
 basket_color db 1010b
 basket_file db "..\CIELAN~1\basket.txt$",0
 basket_x dw 150
 basket_y dw 190
+
+sprite_file db "..\CIELAN~1\broken~1.txt$",0
 
 file_handle dw ?
 buffer dw ?

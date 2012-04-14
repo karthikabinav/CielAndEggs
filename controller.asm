@@ -54,6 +54,12 @@ START:
         mov cur_color ,0000b
         call drawEgg
         
+        mov cx,egg_color[bx]
+        mov color,cl
+            call spriteEgg
+        delay 1,100
+        mov color,0000b
+            call spriteEgg
         
     no_collide:    
         call drawBasket    
