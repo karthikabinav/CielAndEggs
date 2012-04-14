@@ -1,6 +1,15 @@
 .model small
 .stack 100h
 .data
+
+;The variables used in the home page text
+t1 dw 0
+t2 dw 0
+t3 dw 0
+t4 dw 0 ;;; counter
+input db 0
+
+
 key db 'b' 
 
 broken_eggs_text db "Number of Broken Eggs : $"
@@ -38,7 +47,7 @@ egg_x dw 50,100,150,200
 egg_y dw 100,100,100,100
 current_eggs dw 0,0,0,0
 
-mouse_x dw ?
+mouse_x dw 1
 is_mouse db 0
 
 cur_x dw ?

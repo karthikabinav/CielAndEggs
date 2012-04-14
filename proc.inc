@@ -234,7 +234,7 @@ selectRandomHen proc near
         mov bx,ax
     cmp current_eggs[bx],1
         je used
-    
+        
         call generateRandomNumber
         cmp dx,0
             jne rand_one

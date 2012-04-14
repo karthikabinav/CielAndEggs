@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include ..\CIELAN~1\STATIC.inc
+include ..\CIELAN~1\home.inc
 
 .data
 
@@ -15,13 +15,19 @@ START:
     mov al,13h
     mov ah,0
     int 10h
-   
+    
+    call HomePage
+    
+    mov al,13h
+    mov ah,0
+    int 10h
+
     call drawAllHens
     dec score
     call updateScores
   Polling:  
     call initialiseCursor
-    call hideCursor
+    ;call hideCursor
     mov bx,0
     sub bx,2
     checkAllEggs:
@@ -84,8 +90,8 @@ START:
     jz dummy_Polling    
     jnz end_dummy_endOfGame 
     mouse:
-        ;call mouseMove
-        jmp Polling
+        call mouseMove
+        jmp Polling 
     dummy_endOfGame:
         jmp endOfGame
     end_dummy_endOfGame:
@@ -121,7 +127,14 @@ START:
             jmp Polling
     
     endOfGame:
+    call GameOverScreen
+    jmp DOS_MODE
     RETURN_CONTROL:
+    mov al,13h
+    mov ah,0
+    int 10h
+    
+    DOS_MODE:
     mov ax,4c00h
     int 21h
     

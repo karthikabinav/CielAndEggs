@@ -212,8 +212,12 @@ comment/*
 cursorPosition proc near
     mov ax,3
     int 33h
+    
+    mov ax,cx
+    mov cx,2
+    div cx
 
-    mov mouse_x,cx
+    mov mouse_x,ax
     
     ret
 cursorPosition endp
@@ -231,6 +235,15 @@ mouseMove proc near
     mov basket_x,dx
         
     mov basket_color ,1010b
-    
     ret
 mouseMove endp
+
+comment/*
+    Screen which displays the game over screen    
+
+/*
+
+GameOverScreen proc near
+    
+    ret
+GameOverScreen endp
