@@ -9,12 +9,14 @@ t3 dw 0
 t4 dw 0 ;;; counter
 input db 0
 
+high_file db "..\CIELAN~1\high.txt$",0
 
 key db 'b' 
 
+high_text db "High Score: $"
 paused_text db "Paused$"
 
-broken_eggs_text db "Number of Broken Eggs : $"
+broken_eggs_text db "Broken Eggs : $"
 score_text db "Score : $"
 
 pixel_row dw 1
@@ -61,6 +63,8 @@ cur_color dw ?
 top_x dw 0
 top_y dw 0
 color db 1111b
+
+i dw 0
 
 ;Variables to store values of where to print
 p_x db 0

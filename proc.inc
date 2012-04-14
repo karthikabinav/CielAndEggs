@@ -206,7 +206,7 @@ updateScores proc near
     call printString    
 
     mov p_x,1
-    mov p_y,25
+    mov p_y,13
     mov cx,broken_eggs
     call printNumber
     
@@ -385,3 +385,46 @@ pauseGame proc near
 
         ret
 pauseGame endp
+
+comment/*
+    Reads the highscore from the file
+    
+/*
+
+readHighScore proc near
+    
+    mov al,0
+    mov ah,3dh
+    lea dx,high_file
+    int 21h
+    
+    mov bx,ax
+    mov i,0
+    while_read:
+        mov al,0
+        mov ah,3fh
+        mov cx,1
+        lea dx,buffer
+        int 21h
+        
+        cmp ax,0
+            je return_i
+            
+            mov dx,buffer[0]
+            sub dx,'0'
+            push dx
+            mov ax,i
+            mov cx,10
+            mul cx
+            pop dx
+            add ax,dx
+            mov i,ax
+            jmp while_read  
+
+    return_i:
+        mov dx,i
+        mov al,0
+        mov ah,3Eh
+        int 21h
+        ret
+readHighScore endp

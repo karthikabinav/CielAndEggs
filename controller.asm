@@ -24,14 +24,23 @@ START:
 
     call drawAllHens
     call drawWires
-
+    
+        
     dec score
     call updateScores
     mov color,1100b
     DrawLineHorizontal 20,0,320
-  Polling:  
-    
-    ;call hideCursor
+  
+    mov_cursor 0,180
+    lea dx,high_text
+    call printString
+    mov p_x,0
+    mov p_y,195
+    call readHighScore
+    mov cx,dx
+    call printNumber
+
+    Polling:  
     mov bx,0
     sub bx,2
     checkAllEggs:
@@ -142,12 +151,17 @@ START:
             jmp Polling
     endOfGame:
     call GameOverScreen
-    jmp DOS_MODE
+    jmp WriteScore
     RETURN_CONTROL:
     mov al,13h
     mov ah,0
     int 10h
     
+    writeScore:
+        call readHighScore
+        cmp score,dx
+            jle DOS_MODE
+            ;call writeHighScore
     DOS_MODE:
     mov ax,4c00h
     int 21h
