@@ -44,13 +44,12 @@ START:
             jne checkAllEggs
        
         call detect_collision
+        cmp dx,1
+            je no_animation
         call detect_broken_egg
         cmp dx,1
             jne no_collide
-        call updateScores
-        cmp game_over,1
-            jge dummy_endOfGame
-        
+                
         mov cur_color ,0000b
         call drawEgg
         
@@ -61,6 +60,13 @@ START:
         mov color,0000b
             call spriteEgg
         
+        no_animation:
+        mov cur_color,0000b
+            call drawEgg
+        call updateScores
+        cmp game_over,1
+            jge dummy_endOfGame
+
     no_collide:    
         call drawBasket    
     
