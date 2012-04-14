@@ -144,7 +144,7 @@ comment/*
     Return : dx has the generated random number
 /*
 generateRandomNumber proc near
-    push bx 
+     
     mov al,0
     mov ah,2cH
     int 21h
@@ -157,7 +157,7 @@ generateRandomNumber proc near
     
     mov cx,4
     div cx
-    pop bx
+    
     ret
 generateRandomNumber endp
 
@@ -225,30 +225,38 @@ selectRandomHen proc near
     used:
         call generateRandomNumber
         mov ax,dx
+        mov dx,0
         mov cx,2
         mul cx
         mov bx,ax
     cmp current_eggs[bx],1
         je used
-        
-        call generateRandomNumber
-        
+       
+    same:
+       call generateRandomNumber
+       mov ax,dx
+       mov cx,2
+       mul cx
+       mov dx,ax
+       cmp dx,bx
+            je same
+
         cmp dx,0
             jne rand_one
             mov egg_color[bx],1111b
             jmp zero
     rand_one:
-        cmp dx,1
+        cmp dx,2
             jne rand_two
-            mov egg_color[bx],1111b
+            mov egg_color[bx],0100b
             jmp zero
     rand_two:
-        cmp dx,2
+        cmp dx,4
             jne rand_three
             mov egg_color[bx],1110b
             jmp zero
     rand_three:
-        mov egg_color[bx],0100b
+        mov egg_color[bx],1111b
 
     zero:
         cmp bx,0
