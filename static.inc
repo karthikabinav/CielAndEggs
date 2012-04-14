@@ -279,5 +279,19 @@ comment/*
 
 GameOverScreen proc near
     
+    mov al,13h
+    mov ah,0
+    int 10h
+
+    mov ax, 0600h
+	mov bh, 4fh
+	mov cx, 0010h	
+	mov dx, 184fh
+	int 10h
+    
+    mov_cursor 5,5
+    lea dx,gameOverText
+    call printString
+
     ret
 GameOverScreen endp

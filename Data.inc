@@ -32,6 +32,8 @@ buffer dw ?
 broken_eggs dw 0
 score dw 10
 
+gameOverText db "Game Over$"
+
 ;Egg details
 egg_color dw 1111b,1111b,1111b,1111b
 egg_file db "..\CIELAN~1\egg.txt$",0
