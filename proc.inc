@@ -297,7 +297,15 @@ comment/*
 /*
 newEgg proc near
     inc frequency
-    cmp frequency,70
+    cmp score,50
+        jle low_frequency
+        mov cx,50
+        jmp compare
+    low_frequency:
+    mov cx,100
+    sub cx,score
+    compare:
+    cmp frequency,cx
         jne doNothing
         mov frequency,0
         
