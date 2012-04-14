@@ -23,10 +23,14 @@ START:
     int 10h
 
     call drawAllHens
+    call drawWires
+
     dec score
     call updateScores
+    mov color,1100b
+    DrawLineHorizontal 20,0,320
   Polling:  
-    call initialiseCursor
+    
     ;call hideCursor
     mov bx,0
     sub bx,2
@@ -64,6 +68,7 @@ START:
             jne checkAllEggs
             
             call movEgg
+            call drawCutWires
             call curToegg
 
             jmp checkAllEggs
@@ -71,7 +76,7 @@ START:
         call newEgg
     noMoveEgg:
         inc cycle
-        cmp cycle,10
+        cmp cycle,5
             jne mod10
         mov cycle,0
     

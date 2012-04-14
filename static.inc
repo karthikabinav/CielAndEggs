@@ -64,7 +64,7 @@ drawHen proc near
     mov dx,hen_y
     mov top_y,dx
 
-    mov dx,1010b
+    mov dx,0011b
     mov color,dl
     
     mov dx,offset hen_file
@@ -159,6 +159,7 @@ comment/*
 /*
 drawAllHens proc near
     
+    
     mov hen_x,45
     mov hen_y,30
     mov dx,offset hen_file
@@ -237,6 +238,39 @@ mouseMove proc near
     mov basket_color ,1010b
     ret
 mouseMove endp
+
+comment/*
+    Draws the wires
+/*
+drawWires proc near
+    mov color,1000b
+    DrawLineHorizontal 45,0,320
+    DrawLineHorizontal 46,0,320
+    DrawLineHorizontal 47,0,320
+    
+    DrawLineHorizontal 75,0,320
+    DrawLineHorizontal 76,0,320
+    DrawLineHorizontal 77,0,320
+
+    ret
+drawWires endp
+
+comment/*
+    Draws Only the cut part of wires
+/*
+drawCutWires proc near
+    mov color,1000b
+       
+    DrawLineHorizontal 75,45,20
+    DrawLineHorizontal 76,45,20
+    DrawLineHorizontal 77,45,20
+    
+    DrawLineHorizontal 75,165,20
+    DrawLineHorizontal 76,165,20
+    DrawLineHorizontal 77,165,20
+
+    ret
+drawCutWires endp
 
 comment/*
     Screen which displays the game over screen    

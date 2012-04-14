@@ -29,8 +29,7 @@ printNumber proc near
         mov ax,cx
         mov cx,10
         mov bx,0
-  
-         
+                
         store_into_stack:          
             mov dx, 0
             div cx   

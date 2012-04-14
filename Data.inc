@@ -114,4 +114,24 @@ delay macro mh,ml
     pop ax
 
 endm
+comment/*
+    Draws a horizontal line on the screen
+    @params: (row,col) , length_line
+/*
+DrawLineHorizontal macro row,col,length_line
+   local line
+     
+    mov dx,row
+    mov pixel_row,dx
+
+    mov dx,col
+    mov pixel_col,dx
+    
+    mov cx,length_line
+    line:
+        DrawPixel 1111b
+        inc pixel_col
+        loop line
+    
+endm
 
