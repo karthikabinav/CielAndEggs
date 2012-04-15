@@ -1,6 +1,9 @@
 .model small
 .stack 100h
 include ..\CIELAN~1\DATA.INC
+include ..\CIELAN~1\SOUND\BREAK.INC
+include ..\CIELAN~1\SOUND\catch.INC
+
 .data
 .code
 
@@ -97,7 +100,8 @@ detect_broken_egg proc near
     dec score
     mov current_eggs[bx],0
     mov dx,1
-    
+    call SoundBreak
+
     cmp egg_color[bx],1110b
         jne beret_
         dec score
@@ -126,6 +130,7 @@ detect_collision proc near
         jne collisionret_
         mov dx,1
         mov current_eggs[bx],0
+        call SoundCatch
    cmp egg_color[bx],0100b
         jne collisionret_
         cmp score,0

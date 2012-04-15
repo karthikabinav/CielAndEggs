@@ -22,17 +22,17 @@ score_text db "Score : $"
 pixel_row dw 1
 pixel_col dw 1
 
-hen_file db "..\CIELAN~1\hen.txt$",0
+hen_file db "..\CIELAN~1\DESIGN\hen.txt$",0
 hen_x dw 100
 hen_y dw 100
 
 ;Basket details
 basket_color db 1010b
-basket_file db "..\CIELAN~1\basket.txt$",0
+basket_file db "..\CIELAN~1\DESIGN\basket.txt$",0
 basket_x dw 150
 basket_y dw 190
 
-sprite_file db "..\CIELAN~1\broken~1.txt$",0
+sprite_file db "..\CIELAN~1\DESIGN\broken~1.txt$",0
 
 file_handle dw ?
 buffer dw ?
@@ -43,7 +43,7 @@ gameOverText db "Game Over$"
 
 ;Egg details
 egg_color dw 1111b,1111b,1111b,1111b
-egg_file db "..\CIELAN~1\egg.txt$",0
+egg_file db "..\CIELAN~1\DESIGN\egg.txt$",0
 
 cycle db 0
 frequency dw 69

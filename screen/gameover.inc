@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include ..\CIELAN~1\home.inc
+include ..\CIELAN~1\screen\home.inc
 .data
 .code
 

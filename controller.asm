@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include ..\CIELAN~1\GAMEOVER.inc
+include ..\CIELAN~1\screen\GAMEOVER.inc
 
 .data
 
@@ -161,8 +161,6 @@ START:
         call readHighScore
         cmp score,dx
             jle DOS_MODE
-        mov cx,score
-        call printNumber
         call writeHighScore
     DOS_MODE:
     mov ax,4c00h
