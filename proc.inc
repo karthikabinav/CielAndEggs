@@ -2,7 +2,7 @@
 .stack 100h
 include ..\CIELAN~1\DATA.INC
 include ..\CIELAN~1\SOUND\BREAK.INC
-include ..\CIELAN~1\SOUND\catch.INC
+include ..\CIELAN~1\SOUND\CATCH.INC
 
 .data
 .code

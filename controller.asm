@@ -1,6 +1,6 @@
 .model small
 .stack 100h
-include ..\CIELAN~1\screen\GAMEOVER.inc
+include ..\CIELAN~1\SCREEN\GAMEOVER.inc
 
 .data
 

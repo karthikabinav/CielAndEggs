@@ -1,5 +1,5 @@
 .model small
-.stack 100h
+.stack 300h
 .data
 
 ;The variables used in the home page text
@@ -32,7 +32,7 @@ basket_file db "..\CIELAN~1\DESIGN\basket.txt$",0
 basket_x dw 150
 basket_y dw 190
 
-sprite_file db "..\CIELAN~1\DESIGN\broken~1.txt$",0
+sprite_file db "..\CIELAN~1\DESIGN\broken.txt$",0
 
 file_handle dw ?
 buffer dw ?
@@ -107,19 +107,11 @@ comment/*
     @params : higher 16 bits of ms , lower 16 bits if ms
 /*
 delay macro mh,ml
-    push ax
-    push cx
-    push dx
-
-    mov al,0
+    
     mov ah,86h
     mov dx,ml
     mov cx,mh
     int 15h
-
-    pop dx
-    pop cx
-    pop ax
 
 endm
 comment/*
