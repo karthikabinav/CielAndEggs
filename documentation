@@ -1,7 +1,0 @@
-Documentation :
-
-The module is split as data.inc , proc.inc and controller.asm
-
-Please ensure that any data i.e. a variable or a macro is defined only inside data.inc.
-Any procedure that is written is kept only inside proc.inc
-And all logic is written inside the controller.asm. 
